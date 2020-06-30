@@ -234,8 +234,6 @@ public class MongoSourceTask extends SourceTask {
 
   private JsonWriterSettings handleJsonOptions() throws CloneNotSupportedException {
     switch (sourceConfig.getJsonType()) {
-      case "strict":
-        return null;
       case "extended":
         return (JsonWriterSettings.builder()
                 .outputMode(JsonMode.EXTENDED)
@@ -252,7 +250,7 @@ public class MongoSourceTask extends SourceTask {
                 .objectIdConverter((value, writer) -> writer.writeString(value.toHexString()))
                 .build());
       default:
-        throw new CloneNotSupportedException("This Json format is not supported or Unknown please choose : \"relaxed\", \"canonical\", \"shell\", \"strict\": {}");
+          return null;
     }
   }
 
