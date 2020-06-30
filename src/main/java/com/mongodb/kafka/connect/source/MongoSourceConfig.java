@@ -60,7 +60,7 @@ public class MongoSourceConfig extends AbstractConfig {
   public static final String JSON_FORMAT = "json.format";
   private static final String JSON_DOC =
       "This will provide in which type of JSON the output will be, we will have 3 type of mods : "
-          + " * Mod Canonical Format : json.format=canonical "
+          + " * Mod Canonical Format : json.format=extended "
           + " * Mod Relaxed Format json.format=relaxed";
   public static final String JSON_FORMAT_DEFAULT = "canonical";
   public static final String JSON_FORMAT_DISPLAY = " The format of your json output";
