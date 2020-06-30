@@ -59,7 +59,7 @@ public class MongoSourceConfig extends AbstractConfig {
 
   public static final String JSON_FORMAT = "json.format";
   private static final String JSON_DOC =
-      "This will provide in which type of JSON the output will be, we will have 3 type of mods : "
+      "The output mode of the ``JSONWriter``. The accepted values are ``canonical (strict?)`` (Legacy representation. Though now deprecated, this is still the default mode when writing JSON in order to avoid breaking backward compatibility.) and ``relaxed`` (Relaxed representation that loses type information for BSON numeric types and uses a more human-readable representation of BSON dates.)."
           + " * Mod Canonical Format : json.format=canonical "
           + " * Mod Relaxed Format json.format=relaxed";
   public static final String JSON_FORMAT_DEFAULT = "canonical";
