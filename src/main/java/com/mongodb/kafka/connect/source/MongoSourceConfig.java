@@ -59,10 +59,13 @@ public class MongoSourceConfig extends AbstractConfig {
 
   public static final String JSON_FORMAT = "json.format";
   private static final String JSON_DOC =
-      "This will provide in which type of JSON the output will be, we will have 3 type of mods : "
-          + " * Mod Canonical Format : json.format=extended "
-          + " * Mod Relaxed Format json.format=relaxed";
-  public static final String JSON_FORMAT_DEFAULT = "canonical";
+      "The output mode of the ``JSONWriter``. The accepted values are ``strict`` (Legacy representation. Though now deprecated, this is still the default mode when writing JSON in order to avoid breaking backward compatibility.), ``relaxed`` (Relaxed representation that loses type information for BSON numeric types and uses a more human-readable representation of BSON dates.)." +
+          "``shell`` (While not formally documented, this output mode will attempt to produce output that corresponds to what the MongoDB shell actually produces when showing query results.) and ``extended``(Standard extended JSON representation, keep more data from BSON)"
+          + " * Mod Strict Format : json.format=strict "
+          + " * Mod Relaxed Format json.format=relaxed"
+          + " * Mod Shell Format : json.format=shell"
+          + " * Mod Extended Format : json.format=extended";
+  public static final String JSON_FORMAT_DEFAULT = "strict";
   public static final String JSON_FORMAT_DISPLAY = " The format of your json output";
 
   public static final String TOPIC_PREFIX_CONFIG = "topic.prefix";
