@@ -189,24 +189,19 @@ public class MongoSourceTask extends SourceTask {
             getTopicNameFromNamespace(
                 prefix, changeStreamDocument.getDocument("ns", new BsonDocument()));
 
-        Optional<String> jsonDocument = Optional.empty();
+        Optional<BsonDocument> jsonDocumentraw = Optional.empty();
         if (publishFullDocumentOnly) {
           if (changeStreamDocument.containsKey("fullDocument")) {
-            if (jsonOptions==null) {
-              jsonDocument = Optional.of(changeStreamDocument.getDocument("fullDocument").toJson());
-            } else  {
-              jsonDocument = Optional.of(changeStreamDocument.getDocument("fullDocument").toJson(jsonOptions));
-            }
+              jsonDocumentraw = Optional.of(changeStreamDocument.getDocument("fullDocument"));
+
           }
         } else {
-          if (jsonOptions==null) {
-            jsonDocument = Optional.of(changeStreamDocument.toJson());
-          } else {
-            jsonDocument = Optional.of(changeStreamDocument.toJson(jsonOptions));
 
-        } }
+            jsonDocumentraw = Optional.of(changeStreamDocument);
+        }
 
-
+        Optional<String> jsonDocument = Optional.empty(); 
+        jsonDocument = handleJSONparsing(jsonDocumentraw,jsonOptions );
         jsonDocument.ifPresent(
             (json) -> {
               LOGGER.trace("Adding {} to {}: {}", json, topicName, sourceOffset);
@@ -230,6 +225,18 @@ public class MongoSourceTask extends SourceTask {
       }
     }
     return null;
+  }
+
+  private Optional<String> handleJSONparsing(Optional<BsonDocument> jsonDocumentraw, JsonWriterSettings jsonOptions) {
+        if(jsonOptions!=null && jsonDocumentraw.isPresent()){
+          return Optional.of(jsonDocumentraw.get().toJson(jsonOptions));
+        }
+        else if(jsonDocumentraw.isPresent()){
+          return Optional.of(jsonDocumentraw.get().toJson());
+        }
+        else{
+          return Optional.empty();
+        }
   }
 
   private JsonWriterSettings handleJsonOptions() throws CloneNotSupportedException {
