@@ -179,7 +179,7 @@ public class MongoSourceTask extends SourceTask {
         if (isCopying.get()) {
           sourceOffset.put("copy", "true");
         }
-
+        JsonWriterSettings jsonOptions = handleJsonOptions();
         String topicName =
             getTopicNameFromNamespace(
                 prefix, changeStreamDocument.getDocument("ns", new BsonDocument()));
@@ -187,42 +187,20 @@ public class MongoSourceTask extends SourceTask {
         Optional<String> jsonDocument = Optional.empty();
         if (publishFullDocumentOnly) {
           if (changeStreamDocument.containsKey("fullDocument")) {
-            if (sourceConfig.getJsonType().equals("canonical")) {
+            if (jsonOptions==null) {
               jsonDocument = Optional.of(changeStreamDocument.getDocument("fullDocument").toJson());
-            } else if (sourceConfig.getJsonType().equals("relaxed")) {
-              jsonDocument = Optional.of(changeStreamDocument.getDocument("fullDocument").toJson(JsonWriterSettings.builder()
-                      .outputMode(JsonMode.RELAXED)
-                      .objectIdConverter((value, writer) -> writer.writeString(value.toHexString()))
-                      .build()));
-            } else {
-              try {
-              } catch (Exception e) {
-                LOGGER.info(
-                        "This Json format is not supported or Unknown please choose : \"relaxed\", \"canonical\": {}",
-                        e.getMessage());
-              }
+            } else  {
+              jsonDocument = Optional.of(changeStreamDocument.getDocument("fullDocument").toJson(jsonOptions));
             }
           }
         } else {
-          if (sourceConfig.getJsonType().equals("canonical")) {
+          if (jsonOptions==null) {
             jsonDocument = Optional.of(changeStreamDocument.toJson());
-          } else if (sourceConfig.getJsonType().equals("relaxed")) {
-            jsonDocument = Optional.of(changeStreamDocument.toJson(JsonWriterSettings.builder()
-                    .outputMode(JsonMode.RELAXED)
-                    .objectIdConverter((value, writer) -> writer.writeString(value.toHexString()))
-                    .build()));
           } else {
+            jsonDocument = Optional.of(changeStreamDocument.toJson(jsonOptions));
 
-            try {
-            } catch (Exception e) {
-              LOGGER.info(
-                      "This Json format is not supported or Unknown please choose : \"relaxed\", \"canonical\": {}",
-                      e.getMessage());
-            }
-          }
+        } }
 
-
-        }
 
         jsonDocument.ifPresent(
             (json) -> {
@@ -247,6 +225,36 @@ public class MongoSourceTask extends SourceTask {
       }
     }
     return null;
+  }
+
+  private JsonWriterSettings handleJsonOptions() {
+    switch (sourceConfig.getJsonType()) {
+      case "strict":
+        return null;
+      case "extended":
+        return (JsonWriterSettings.builder()
+                .outputMode(JsonMode.EXTENDED)
+                .objectIdConverter((value, writer) -> writer.writeString(value.toHexString()))
+                .build());
+      case "shell":
+        return (JsonWriterSettings.builder()
+                .outputMode(JsonMode.SHELL)
+                .objectIdConverter((value, writer) -> writer.writeString(value.toHexString()))
+                .build());
+      case "relaxed":
+        return (JsonWriterSettings.builder()
+                .outputMode(JsonMode.RELAXED)
+                .objectIdConverter((value, writer) -> writer.writeString(value.toHexString()))
+                .build());
+      default:
+        try {
+        } catch (Exception e) {
+          LOGGER.info(
+                  "This Json format is not supported or Unknown please choose : \"relaxed\", \"canonical\", \"shell\", \"strict\": {}",
+                  e.getMessage());
+        }
+    }
+    return  null;
   }
 
   @Override
