@@ -57,16 +57,16 @@ public class MongoSourceConfig extends AbstractConfig {
       "The connection URI as supported by the official drivers. "
           + "eg: ``mongodb://user@pass@locahost/``.";
 
-  public static final String JSON_FORMAT = "json.format";
-  private static final String JSON_DOC =
+  public static final String JSON_OUTPUT_MODE = "json.format";
+  private static final String JSON_OUTPUT_MODE_DOC =
       "The output mode of the ``JSONWriter``. The accepted values are ``strict`` (Legacy representation. Though now deprecated, this is still the default mode when writing JSON in order to avoid breaking backward compatibility.), ``relaxed`` (Relaxed representation that loses type information for BSON numeric types and uses a more human-readable representation of BSON dates.)." +
           "``shell`` (While not formally documented, this output mode will attempt to produce output that corresponds to what the MongoDB shell actually produces when showing query results.) and ``extended``(Standard extended JSON representation, keep more data from BSON)"
           + " * Mod Strict Format : json.format=strict "
           + " * Mod Relaxed Format json.format=relaxed"
           + " * Mod Shell Format : json.format=shell"
           + " * Mod Extended Format : json.format=extended";
-  public static final String JSON_FORMAT_DEFAULT = "strict";
-  public static final String JSON_FORMAT_DISPLAY = " The format of your json output";
+  public static final String JSON_OUTPUT_MODE_DEFAULT = "strict";
+  public static final String JSON_OUTPUT_MODE_DISPLAY = " The format of your json output";
 
   public static final String TOPIC_PREFIX_CONFIG = "topic.prefix";
   private static final String TOPIC_PREFIX_DOC =
@@ -195,7 +195,7 @@ public class MongoSourceConfig extends AbstractConfig {
   }
 
   public String getJsonType() {
-    return getString(JSON_FORMAT);
+    return getString(JSON_OUTPUT_MODE);
   }
 
   public Optional<FullDocument> getFullDocument() {
@@ -271,15 +271,15 @@ public class MongoSourceConfig extends AbstractConfig {
         COPY_EXISTING_DISPLAY);
 
     configDef.define(
-        JSON_FORMAT,
+            JSON_OUTPUT_MODE,
         Type.STRING,
-        JSON_FORMAT_DEFAULT,
+            JSON_OUTPUT_MODE_DEFAULT,
         Importance.MEDIUM,
-        JSON_DOC,
+            JSON_OUTPUT_MODE_DOC,
         group,
         ++orderInGroup,
         Width.MEDIUM,
-        JSON_FORMAT_DISPLAY);
+            JSON_OUTPUT_MODE_DISPLAY);
 
     configDef.define(
         COPY_EXISTING_MAX_THREADS_CONFIG,
