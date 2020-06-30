@@ -196,7 +196,6 @@ public class MongoSourceTask extends SourceTask {
                       .build()));
             } else {
               try {
-                String helloTest = "test";
               } catch (Exception e) {
                 LOGGER.info(
                         "This Json format is not supported or Unknown please choose : \"relaxed\", \"canonical\": {}",
@@ -215,7 +214,6 @@ public class MongoSourceTask extends SourceTask {
           } else {
 
             try {
-              String helloTest = "test";
             } catch (Exception e) {
               LOGGER.info(
                       "This Json format is not supported or Unknown please choose : \"relaxed\", \"canonical\": {}",
