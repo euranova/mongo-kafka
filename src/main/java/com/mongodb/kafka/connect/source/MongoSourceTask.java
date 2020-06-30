@@ -179,7 +179,12 @@ public class MongoSourceTask extends SourceTask {
         if (isCopying.get()) {
           sourceOffset.put("copy", "true");
         }
-        JsonWriterSettings jsonOptions = handleJsonOptions();
+        JsonWriterSettings jsonOptions = null;
+        try {
+          jsonOptions = handleJsonOptions();
+        } catch (CloneNotSupportedException e) {
+          e.printStackTrace();
+        }
         String topicName =
             getTopicNameFromNamespace(
                 prefix, changeStreamDocument.getDocument("ns", new BsonDocument()));
@@ -227,7 +232,7 @@ public class MongoSourceTask extends SourceTask {
     return null;
   }
 
-  private JsonWriterSettings handleJsonOptions() {
+  private JsonWriterSettings handleJsonOptions() throws CloneNotSupportedException {
     switch (sourceConfig.getJsonType()) {
       case "strict":
         return null;
@@ -247,14 +252,8 @@ public class MongoSourceTask extends SourceTask {
                 .objectIdConverter((value, writer) -> writer.writeString(value.toHexString()))
                 .build());
       default:
-        try {
-        } catch (Exception e) {
-          LOGGER.info(
-                  "This Json format is not supported or Unknown please choose : \"relaxed\", \"canonical\", \"shell\", \"strict\": {}",
-                  e.getMessage());
-        }
+        throw new CloneNotSupportedException("This Json format is not supported or Unknown please choose : \"relaxed\", \"canonical\", \"shell\", \"strict\": {}");
     }
-    return  null;
   }
 
   @Override
