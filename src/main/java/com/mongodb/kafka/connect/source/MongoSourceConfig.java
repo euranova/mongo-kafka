@@ -46,6 +46,7 @@ import com.mongodb.client.model.changestream.FullDocument;
 import com.mongodb.kafka.connect.util.ConfigHelper;
 import com.mongodb.kafka.connect.util.ConnectConfigException;
 import com.mongodb.kafka.connect.util.Validators;
+import org.bson.json.JsonMode;
 
 public class MongoSourceConfig extends AbstractConfig {
 
@@ -56,9 +57,7 @@ public class MongoSourceConfig extends AbstractConfig {
   private static final String CONNECTION_URI_DOC =
       "The connection URI as supported by the official drivers. "
           + "eg: ``mongodb://user@pass@locahost/``.";
-  public enum JsonFormatMode {
-    STRICT, RELAXED, SHELL, EXTENDED
-  }
+
   public static final String JSON_OUTPUT_MODE = "json.format";
   private static final String JSON_OUTPUT_MODE_DOC =
       "The output mode of the ``JSONWriter``. The accepted values are ``strict`` (Legacy representation. Though now deprecated, this is still the default mode when writing JSON in order to avoid breaking backward compatibility.), ``relaxed`` (Relaxed representation that loses type information for BSON numeric types and uses a more human-readable representation of BSON dates.)." +
@@ -276,7 +275,7 @@ public class MongoSourceConfig extends AbstractConfig {
             JSON_OUTPUT_MODE,
         Type.STRING,
             JSON_OUTPUT_MODE_DEFAULT,
-            Validators.EnumValidatorAndRecommender.in(JsonFormatMode.values()),
+            Validators.EnumValidatorAndRecommender.in(JsonMode.values()),
         Importance.MEDIUM,
             JSON_OUTPUT_MODE_DOC,
         group,
