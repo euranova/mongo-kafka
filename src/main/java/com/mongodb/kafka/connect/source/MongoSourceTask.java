@@ -241,17 +241,17 @@ public class MongoSourceTask extends SourceTask {
 
   private JsonWriterSettings handleJsonOptions() throws CloneNotSupportedException {
     switch (sourceConfig.getJsonType()) {
-      case "extended":
+      case EXTENDED:
         return (JsonWriterSettings.builder()
                 .outputMode(JsonMode.EXTENDED)
                 .objectIdConverter((value, writer) -> writer.writeString(value.toHexString()))
                 .build());
-      case "shell":
+      case  SHELL:
         return (JsonWriterSettings.builder()
                 .outputMode(JsonMode.SHELL)
                 .objectIdConverter((value, writer) -> writer.writeString(value.toHexString()))
                 .build());
-      case "relaxed":
+      case RELAXED:
         return (JsonWriterSettings.builder()
                 .outputMode(JsonMode.RELAXED)
                 .objectIdConverter((value, writer) -> writer.writeString(value.toHexString()))

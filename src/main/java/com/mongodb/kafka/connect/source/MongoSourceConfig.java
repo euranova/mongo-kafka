@@ -195,8 +195,8 @@ public class MongoSourceConfig extends AbstractConfig {
     return collationFromJson(getString(COLLATION_CONFIG));
   }
 
-  public String getJsonType() {
-    return getString(JSON_OUTPUT_MODE);
+  public JsonMode getJsonType() {
+    return JsonMode.valueOf(JSON_OUTPUT_MODE.toUpperCase());
   }
 
   public Optional<FullDocument> getFullDocument() {
