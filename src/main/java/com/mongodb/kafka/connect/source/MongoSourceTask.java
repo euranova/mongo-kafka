@@ -201,7 +201,7 @@ public class MongoSourceTask extends SourceTask {
         }
 
         Optional<String> jsonDocument = Optional.empty(); 
-        jsonDocument = handleJSONparsing(jsonDocumentraw,jsonOptions );
+        jsonDocument = convertToJson(jsonDocumentraw,jsonOptions );
         jsonDocument.ifPresent(
             (json) -> {
               LOGGER.trace("Adding {} to {}: {}", json, topicName, sourceOffset);
@@ -227,7 +227,7 @@ public class MongoSourceTask extends SourceTask {
     return null;
   }
 
-  private Optional<String> handleJSONparsing(Optional<BsonDocument> jsonDocumentraw, JsonWriterSettings jsonOptions) {
+  private Optional<String> convertToJson(Optional<BsonDocument> jsonDocumentraw, JsonWriterSettings jsonOptions) {
         if(jsonOptions!=null && jsonDocumentraw.isPresent()){
           return Optional.of(jsonDocumentraw.get().toJson(jsonOptions));
         }
