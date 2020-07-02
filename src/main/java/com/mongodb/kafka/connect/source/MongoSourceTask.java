@@ -186,19 +186,19 @@ public class MongoSourceTask extends SourceTask {
             getTopicNameFromNamespace(
                 prefix, changeStreamDocument.getDocument("ns", new BsonDocument()));
 
-        Optional<BsonDocument> jsonDocumentraw = Optional.empty();
+        Optional<BsonDocument> bsonDocument = Optional.empty();
         if (publishFullDocumentOnly) {
           if (changeStreamDocument.containsKey("fullDocument")) {
-              jsonDocumentraw = Optional.of(changeStreamDocument.getDocument("fullDocument"));
+              bsonDocument = Optional.of(changeStreamDocument.getDocument("fullDocument"));
 
           }
         } else {
 
-            jsonDocumentraw = Optional.of(changeStreamDocument);
+            bsonDocument = Optional.of(changeStreamDocument);
         }
 
         Optional<String> jsonDocument = Optional.empty(); 
-        jsonDocument = convertToJson(jsonDocumentraw,jsonOptions );
+        jsonDocument = convertToJson(bsonDocument,jsonOptions );
         jsonDocument.ifPresent(
             (json) -> {
               LOGGER.trace("Adding {} to {}: {}", json, topicName, sourceOffset);
@@ -224,12 +224,12 @@ public class MongoSourceTask extends SourceTask {
     return null;
   }
 
-  private Optional<String> convertToJson(Optional<BsonDocument> jsonDocumentraw, JsonWriterSettings jsonOptions) {
-        if(jsonOptions!=null && jsonDocumentraw.isPresent()){
-          return Optional.of(jsonDocumentraw.get().toJson(jsonOptions));
+  private final Optional<String> convertToJson(Optional<BsonDocument> bsonDocument, JsonWriterSettings jsonOptions) {
+        if(jsonOptions!=null && bsonDocument.isPresent()){
+          return Optional.of(bsonDocument.get().toJson(jsonOptions));
         }
-        else if(jsonDocumentraw.isPresent()){
-          return Optional.of(jsonDocumentraw.get().toJson());
+        else if(bsonDocument.isPresent()){
+          return Optional.of(bsonDocument.get().toJson());
         }
         else{
           return Optional.empty();
