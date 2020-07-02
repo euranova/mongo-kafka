@@ -228,15 +228,11 @@ public class MongoSourceTask extends SourceTask {
   }
 
   private Optional<String> convertToJson(Optional<BsonDocument> jsonDocumentraw, JsonWriterSettings jsonOptions) {
-        if(jsonOptions!=null && jsonDocumentraw.isPresent()){
-          return Optional.of(jsonDocumentraw.get().toJson(jsonOptions));
-        }
-        else if(jsonDocumentraw.isPresent()){
-          return Optional.of(jsonDocumentraw.get().toJson());
-        }
-        else{
-          return Optional.empty();
-        }
+    if (jsonWriterSettings == null) {
+      return document.map(BsonDocument::toJson);
+    }
+
+    return document.map((doc) -> doc.toJson(jsonWriterSettings));
   }
 
   private JsonWriterSettings handleJsonOptions() throws CloneNotSupportedException {
