@@ -225,15 +225,11 @@ public class MongoSourceTask extends SourceTask {
   }
 
   private final Optional<String> convertToJson(Optional<BsonDocument> bsonDocument, JsonWriterSettings jsonOptions) {
-        if(jsonOptions!=null && bsonDocument.isPresent()){
-          return Optional.of(bsonDocument.get().toJson(jsonOptions));
-        }
-        else if(bsonDocument.isPresent()){
-          return Optional.of(bsonDocument.get().toJson());
-        }
-        else{
-          return Optional.empty();
-        }
+    if (jsonOptions == null) {
+      return bsonDocument.map(BsonDocument::toJson);
+    }
+
+    return bsonDocument.map((doc) -> doc.toJson(jsonOptions));
   }
 
   private JsonWriterSettings handleJsonOptions(){
