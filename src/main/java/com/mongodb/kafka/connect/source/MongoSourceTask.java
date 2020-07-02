@@ -180,11 +180,8 @@ public class MongoSourceTask extends SourceTask {
           sourceOffset.put("copy", "true");
         }
         JsonWriterSettings jsonOptions = null;
-        try {
           jsonOptions = handleJsonOptions();
-        } catch (CloneNotSupportedException e) {
-          e.printStackTrace();
-        }
+
         String topicName =
             getTopicNameFromNamespace(
                 prefix, changeStreamDocument.getDocument("ns", new BsonDocument()));
@@ -239,7 +236,7 @@ public class MongoSourceTask extends SourceTask {
         }
   }
 
-  private JsonWriterSettings handleJsonOptions() throws CloneNotSupportedException {
+  private JsonWriterSettings handleJsonOptions(){
     switch (sourceConfig.getJsonType()) {
       case EXTENDED:
         return (JsonWriterSettings.builder()
