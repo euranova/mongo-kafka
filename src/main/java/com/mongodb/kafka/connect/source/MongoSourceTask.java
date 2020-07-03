@@ -197,8 +197,8 @@ public class MongoSourceTask extends SourceTask {
             bsonDocument = Optional.of(changeStreamDocument);
         }
 
-        Optional<String> jsonDocument = Optional.empty(); 
-        jsonDocument = convertToJson(bsonDocument,jsonOptions );
+        Optional<String> jsonDocument;
+        jsonDocument = convertToJson(bsonDocument, jsonOptions);
         jsonDocument.ifPresent(
             (json) -> {
               LOGGER.trace("Adding {} to {}: {}", json, topicName, sourceOffset);
@@ -224,7 +224,7 @@ public class MongoSourceTask extends SourceTask {
     return null;
   }
 
-  private final Optional<String> convertToJson(Optional<BsonDocument> bsonDocument, JsonWriterSettings jsonOptions) {
+  private Optional<String> convertToJson(final Optional<BsonDocument> bsonDocument, final JsonWriterSettings jsonOptions) {
     if (jsonOptions == null) {
       return bsonDocument.map(BsonDocument::toJson);
     }
