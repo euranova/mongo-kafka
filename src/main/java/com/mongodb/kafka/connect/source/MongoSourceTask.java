@@ -160,8 +160,8 @@ public class MongoSourceTask extends SourceTask {
     long nextUpdate = startPoll + sourceConfig.getLong(POLL_AWAIT_TIME_MS_CONFIG);
     String prefix = sourceConfig.getString(TOPIC_PREFIX_CONFIG);
     Map<String, Object> partition = createPartitionMap(sourceConfig);
-    JsonWriterSettings jsonOptions = null;
-    jsonOptions = handleJsonOptions();
+    JsonWriterSettings jsonOptions = handleJsonOptions();
+
     while (isRunning.get()) {
       Optional<BsonDocument> next = getNextDocument();
       long untilNext = nextUpdate - time.milliseconds();
@@ -189,16 +189,15 @@ public class MongoSourceTask extends SourceTask {
         Optional<BsonDocument> bsonDocument = Optional.empty();
         if (publishFullDocumentOnly) {
           if (changeStreamDocument.containsKey("fullDocument")) {
-              bsonDocument = Optional.of(changeStreamDocument.getDocument("fullDocument"));
+            bsonDocument = Optional.of(changeStreamDocument.getDocument("fullDocument"));
 
           }
         } else {
 
-            bsonDocument = Optional.of(changeStreamDocument);
+          bsonDocument = Optional.of(changeStreamDocument);
         }
 
-        Optional<String> jsonDocument;
-        jsonDocument = convertToJson(bsonDocument, jsonOptions);
+        Optional<String> jsonDocument = convertToJson(bsonDocument, jsonOptions);
         jsonDocument.ifPresent(
             (json) -> {
               LOGGER.trace("Adding {} to {}: {}", json, topicName, sourceOffset);
@@ -232,25 +231,20 @@ public class MongoSourceTask extends SourceTask {
     return bsonDocument.map((doc) -> doc.toJson(jsonOptions));
   }
 
-  private JsonWriterSettings handleJsonOptions(){
-    JsonMode jsonMode;
-    switch (sourceConfig.getJsonType()) {
+  private JsonWriterSettings handleJsonOptions() {
+    JsonMode jsonMode = sourceConfig.getJsonOutputMode();
+    switch (jsonMode) {
       case EXTENDED:
-        jsonMode = JsonMode.EXTENDED;
-        break;
-      case  SHELL:
-        jsonMode = JsonMode.SHELL;
-        break;
+      case SHELL:
       case RELAXED:
-          jsonMode = JsonMode.RELAXED;
-          break;
-      default:
-          return null;
-    }
-    return (JsonWriterSettings.builder()
+        return (JsonWriterSettings.builder()
             .outputMode(jsonMode)
             .objectIdConverter((value, writer) -> writer.writeString(value.toHexString()))
             .build());
+      default:
+        return null;
+    }
+
   }
 
   @Override

@@ -58,7 +58,7 @@ public class MongoSourceConfig extends AbstractConfig {
       "The connection URI as supported by the official drivers. "
           + "eg: ``mongodb://user@pass@locahost/``.";
 
-  public static final String JSON_OUTPUT_MODE  = "json.format";
+  public static final String JSON_OUTPUT_MODE = "json.format";
   private static final String JSON_OUTPUT_MODE_DOC =
       "The output mode of the ``JSONWriter``. The accepted values are ``strict`` "
           + "(Legacy representation. Though now deprecated, this is still the default mode when writing JSON"
@@ -201,8 +201,8 @@ public class MongoSourceConfig extends AbstractConfig {
     return collationFromJson(getString(COLLATION_CONFIG));
   }
 
-  public JsonMode getJsonType() {
-    return JsonMode.valueOf(JSON_OUTPUT_MODE.toUpperCase());
+  public JsonMode getJsonOutputMode() {
+    return JsonMode.valueOf(getString(JSON_OUTPUT_MODE).toUpperCase());
   }
 
   public Optional<FullDocument> getFullDocument() {
@@ -278,16 +278,16 @@ public class MongoSourceConfig extends AbstractConfig {
         COPY_EXISTING_DISPLAY);
 
     configDef.define(
-            JSON_OUTPUT_MODE,
+        JSON_OUTPUT_MODE,
         Type.STRING,
-            JSON_OUTPUT_MODE_DEFAULT,
-            Validators.EnumValidatorAndRecommender.in(JsonMode.values()),
+        JSON_OUTPUT_MODE_DEFAULT,
+        Validators.EnumValidatorAndRecommender.in(JsonMode.values()),
         Importance.MEDIUM,
-            JSON_OUTPUT_MODE_DOC,
+        JSON_OUTPUT_MODE_DOC,
         group,
         ++orderInGroup,
         Width.MEDIUM,
-            JSON_OUTPUT_MODE_DISPLAY);
+        JSON_OUTPUT_MODE_DISPLAY);
 
     configDef.define(
         COPY_EXISTING_MAX_THREADS_CONFIG,
