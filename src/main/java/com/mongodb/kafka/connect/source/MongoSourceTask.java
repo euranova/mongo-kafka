@@ -160,7 +160,8 @@ public class MongoSourceTask extends SourceTask {
     long nextUpdate = startPoll + sourceConfig.getLong(POLL_AWAIT_TIME_MS_CONFIG);
     String prefix = sourceConfig.getString(TOPIC_PREFIX_CONFIG);
     Map<String, Object> partition = createPartitionMap(sourceConfig);
-
+    JsonWriterSettings jsonOptions = null;
+    jsonOptions = handleJsonOptions();
     while (isRunning.get()) {
       Optional<BsonDocument> next = getNextDocument();
       long untilNext = nextUpdate - time.milliseconds();
@@ -179,8 +180,7 @@ public class MongoSourceTask extends SourceTask {
         if (isCopying.get()) {
           sourceOffset.put("copy", "true");
         }
-        JsonWriterSettings jsonOptions = null;
-          jsonOptions = handleJsonOptions();
+
 
         String topicName =
             getTopicNameFromNamespace(
@@ -233,25 +233,24 @@ public class MongoSourceTask extends SourceTask {
   }
 
   private JsonWriterSettings handleJsonOptions(){
+    JsonMode jsonMode;
     switch (sourceConfig.getJsonType()) {
       case EXTENDED:
-        return (JsonWriterSettings.builder()
-                .outputMode(JsonMode.EXTENDED)
-                .objectIdConverter((value, writer) -> writer.writeString(value.toHexString()))
-                .build());
+        jsonMode = JsonMode.EXTENDED;
+        break;
       case  SHELL:
-        return (JsonWriterSettings.builder()
-                .outputMode(JsonMode.SHELL)
-                .objectIdConverter((value, writer) -> writer.writeString(value.toHexString()))
-                .build());
+        jsonMode = JsonMode.SHELL;
+        break;
       case RELAXED:
-        return (JsonWriterSettings.builder()
-                .outputMode(JsonMode.RELAXED)
-                .objectIdConverter((value, writer) -> writer.writeString(value.toHexString()))
-                .build());
+          jsonMode = JsonMode.RELAXED;
+          break;
       default:
           return null;
     }
+    return (JsonWriterSettings.builder()
+            .outputMode(jsonMode)
+            .objectIdConverter((value, writer) -> writer.writeString(value.toHexString()))
+            .build());
   }
 
   @Override
