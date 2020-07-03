@@ -68,10 +68,10 @@ public class MongoSourceConfig extends AbstractConfig {
           + "``shell`` (While not formally documented, this output mode will attempt to produce output that "
           + " corresponds to what the MongoDB shell actually produces when showing query results.) and "
           + "``extended``(Standard extended JSON representation, keep more data from BSON)"
-          + " * Mod Strict Format : json.format=strict "
-          + " * Mod Relaxed Format json.format=relaxed"
-          + " * Mod Shell Format : json.format=shell"
-          + " * Mod Extended Format : json.format=extended";
+          + " * Mode Strict Format: json.format=strict "
+          + " * Mode Relaxed Format: json.format=relaxed"
+          + " * Mode Shell Format: json.format=shell"
+          + " * Mode Extended Format: json.format=extended";
   public static final String JSON_OUTPUT_MODE_DEFAULT = "strict";
   public static final String JSON_OUTPUT_MODE_DISPLAY = " The format of your json output";
 
